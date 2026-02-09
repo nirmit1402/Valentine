@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+
+  <style>
+    :root{
+      --bg1:#ffd6e0;
+      --bg2:#ff8fab;
+      --card:#ffffffee;
+      --text:#2a1b1f;
+      --yes:#ff2f70;
+      --yes2:#ff89b4;
+      --no:#c8cdd6;
+      --shadow: 0 18px 45px rgba(0,0,0,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 900px at 20% 10%, var(--bg1), transparent 60%),
+                  radial-gradient(900px 800px at 80% 90%, var(--bg2), transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    /* ===== Cinematic Intro (Netflix-ish + Apple clean) ===== */
+    .intro{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#000;
+      color:#fff;
+      overflow:hidden;
+    }
+    .intro__bg{
+      position:absolute;
+      inset:-30%;
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(255,80,130,.35), transparent 60%),
+        radial-gradient(800px 650px at 80% 75%, rgba(255,200,220,.22), transparent 60%),
+        radial-gradient(1000px 800px at 50% 50%, rgba(255,255,255,.06), transparent 55%),
+        linear-gradient(180deg, #07070a, #000);
+      transform: scale(1.15);
+      animation: introZoom 2.6s ease forwards;
+    }
+    @keyframes introZoom{
+      from { transform: scale(1.22); filter: blur(1px); }
+      to   { transform: scale(1.10); filter: blur(0px); }
+    }
+    .intro::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      opacity:.10;
+      mix-blend-mode: overlay;
+      pointer-events:none;
+    }
+    .intro__content{
+      position:relative;
+      text-align:center;
+      padding: 20px;
+      width:min(760px, 92vw);
+    }
+    .intro__badge{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(6px);
+      opacity:0;
+      transform: translateY(10px);
+      animation: fadeUp .7s ease .15s forwards;
+    }
+    .intro__logo{
+      margin:18px 0 8px;
+      font-weight:900;
+      font-size: clamp(44px, 10vw, 92px);
+      letter-spacing: .08em;
+      text-transform:uppercase;
+      line-height:1;
+      background: linear-gradient(180deg, #fff, rgba(255,255,255,.65));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow: 0 16px 55px rgba(255,60,120,.18);
+      opacity:0;
+      transform: scale(.92);
+      animation: logoBoom 1.05s cubic-bezier(.2,.9,.2,1) .35s forwards;
+    }
+    @keyframes logoBoom{
+      0% { opacity:0; transform: scale(.92); filter: blur(2px); }
+      60%{ opacity:1; transform: scale(1.03); filter: blur(0px); }
+      100%{ opacity:1; transform: scale(1.00); }
+    }
+    .intro__sub{
+      font-size: clamp(14px, 2.6vw, 18px);
+      opacity:0;
+      transform: translateY(10px);
+      animation: fadeUp .7s ease .85s forwards;
+    }
+    @keyframes fadeUp{ to { opacity:1; transform: translateY(0); } }
+    .intro__progress{
+      margin: 20px auto 0;
+      width:min(520px, 86vw);
+      height: 6px;
+      border-radius:999px;
+      background: rgba(255,255,255,.14);
+      overflow:hidden;
+      box-shadow: 0 10px 35px rgba(0,0,0,.55);
+    }
+    .intro__bar{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, #ff2f70, #ff89b4);
+      box-shadow: 0 10px 25px rgba(255,47,112,.25);
+    }
+    .intro__hint{
+      margin-top: 14px;
+      font-size:12px;
+      opacity:.65;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .intro--hide{ animation: introOut .55s ease forwards; }
+    @keyframes introOut{ to { opacity:0; transform: scale(1.02); } }
+
+    /* ===== Main Card ===== */
+    .card{
+      width:min(560px, 92vw);
+      background:var(--card);
+      border-radius:28px;
+      padding:26px 22px 20px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(8px);
+      position:relative;
+      text-align:center;
+    }
+    h1{
+      margin: 6px 0 6px;
+      font-size: clamp(22px, 4.6vw, 34px);
+      letter-spacing: .2px;
+    }
+    h2{
+      margin:0 0 12px;
+      font-size: clamp(16px, 3.4vw, 22px);
+      color:#b00050;
+      font-weight:800;
+    }
+    .sub{
+      margin:0 0 12px;
+      opacity:.75;
+      font-size: 13px;
+    }
+    .gif-wrap{
+      display:flex;
+      justify-content:center;
+      margin: 10px 0 16px;
+    }
+    .gif{
+      width:min(320px, 70vw);
+      height:auto;
+      border-radius:20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.15);
+    }
+    .playground{
+      position:relative;
+      height:140px;
+      border-radius:22px;
+      background: rgba(255,255,255,.55);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .btn{
+      border:0;
+      padding:14px 18px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:18px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.15);
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      position:absolute;
+    }
+    .btn:active{ transform: scale(.98); }
+    .btn:hover{ filter: brightness(1.02); }
+
+    #yesBtn{
+      background: linear-gradient(135deg, var(--yes), var(--yes2));
+      color:white;
+      left: 50%;
+      top: 56%;
+      transform: translate(-50%,-50%);
+      min-width:140px;
+    }
+    #noBtn{
+      background: linear-gradient(135deg, #e6e9ef, var(--no));
+      color:#2b2f36;
+      left: 16%;
+      top: 22%;
+      min-width:120px;
+    }
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      opacity:.6;
+    }
+
+    .toast{
+      position:absolute;
+      left:50%;
+      top: 84%;
+      transform:translateX(-50%);
+      background: rgba(20,20,25,.86);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      transition: opacity .25s ease, transform .25s ease;
+      pointer-events:none;
+      white-space:nowrap;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-6px);
+    }
+
+    .success h1{ color:#b1003a; }
+    .success #yesBtn, .success #noBtn{ pointer-events:none; opacity:0; }
+  </style>
+</head>
+
+<body>
+  <!-- CINEMATIC INTRO OVERLAY -->
+  <div id="intro" class="intro" aria-label="Intro">
+    <div class="intro__bg"></div>
+    <div class="intro__content">
+      <div class="intro__badge">A NIRMIT ORIGINAL</div>
+      <div class="intro__logo">ALINA</div>
+      <div class="intro__sub">A Valentine Invitation 💘</div>
+
+      <div class="intro__progress">
+        <div class="intro__bar" id="introBar"></div>
+      </div>
+
+      <div class="intro__hint">Tap to skip</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="card" id="card">
+    <h1 id="titleEn">Alina Khafizova, will you be my Valentine? 💘</h1>
+    <h2 id="titleRu">Алина Хафизова, будешь моей Валентинкой? 💖</h2>
+    <p class="sub" id="subtitle">Be honest… but choose wisely 😌</p>
+
+    <div class="gif-wrap">
+      <!-- begging puppy eyes gif -->
+      <img id="gif" class="gif" alt="cute gif"
+        src="https://media.giphy.com/media/SX0r3crLtWBldzyBpG/giphy.gif" />
+    </div>
+
+    <section class="playground" id="playground" aria-label="buttons area">
+      <button class="btn" id="noBtn" type="button">No 😢</button>
+      <button class="btn" id="yesBtn" type="button">YES ❤️</button>
+      <div class="toast" id="toast">Nice try 😈</div>
+    </section>
+
+    <div class="footer">Tip: open on mobile for maximum drama.</div>
+  </main>
+
+  <!-- Confetti -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.3/confetti.min.js"></script>
+
+  <script>
+    // ===== Intro control =====
+    const intro = document.getElementById("intro");
+    const introBar = document.getElementById("introBar");
+    const introDuration = 2400;
+
+    requestAnimationFrame(() => {
+      introBar.style.transition = `width ${introDuration}ms ease`;
+      introBar.style.width = "100%";
+    });
+
+    function hideIntro(){
+      if (!intro) return;
+      intro.classList.add("intro--hide");
+      setTimeout(() => intro.remove(), 520);
+    }
+    setTimeout(hideIntro, introDuration + 150);
+    intro.addEventListener("click", hideIntro, { once:true });
+    intro.addEventListener("touchstart", hideIntro, { once:true });
+
+    // ===== Main interaction =====
+    const playground = document.getElementById("playground");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const card = document.getElementById("card");
+    const gif = document.getElementById("gif");
+    const subtitle = document.getElementById("subtitle");
+    const toast = document.getElementById("toast");
+    const titleEn = document.getElementById("titleEn");
+    const titleRu = document.getElementById("titleRu");
+
+    let lastMoveAt = 0;
+
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+    function rect(el){ return el.getBoundingClientRect(); }
+
+    function overlaps(a, b, padding = 10){
+      return !(
+        a.right + padding < b.left ||
+        a.left - padding > b.right ||
+        a.bottom + padding < b.top ||
+        a.top - padding > b.bottom
+      );
+    }
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove("show"), 700);
+    }
+
+    function moveNoButton(){
+      const now = Date.now();
+      if (now - lastMoveAt < 120) return;
+      lastMoveAt = now;
+
+      const pg = rect(playground);
+      const nb = rect(noBtn);
+      const yb = rect(yesBtn);
+
+      const maxX = pg.width - nb.width;
+      const maxY = pg.height - nb.height;
+
+      let x = 0, y = 0;
+      for (let i = 0; i < 14; i++){
+        x = Math.random() * maxX;
+        y = Math.random() * maxY;
+
+        const newRect = {
+          left: pg.left + x,
+          top: pg.top + y,
+          right: pg.left + x + nb.width,
+          bottom: pg.top + y + nb.height
+        };
+        if (!overlaps(newRect, yb, 18)) break;
+      }
+
+      x = clamp(x, 0, maxX);
+      y = clamp(y, 0, maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.transform = `translateZ(0) rotate(${(Math.random()*10-5).toFixed(1)}deg)`;
+
+      const msgs = [
+        "Nice try 😈",
+        "Not today 😭",
+        "Uh-uh 🙅‍♂️",
+        "Impossible 😌",
+        "Ты хотела нажать YES 😏"
+      ];
+      showToast(msgs[Math.floor(Math.random()*msgs.length)]);
+    }
+
+    // NO dodges: hover + touch + near-cursor
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); moveNoButton(); });
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
+
+    playground.addEventListener("pointermove", (e) => {
+      const nb = rect(noBtn);
+      const dx = Math.max(nb.left - e.clientX, 0, e.clientX - nb.right);
+      const dy = Math.max(nb.top - e.clientY, 0, e.clientY - nb.bottom);
+      const dist = Math.hypot(dx, dy);
+      if (dist < 40) moveNoButton();
+    });
+
+    // YES flow
+    yesBtn.addEventListener("click", () => {
+      card.classList.add("success");
+
+      titleEn.textContent = "SHE SAID YES!!! ❤️🥳";
+      titleRu.textContent = "ОНА СКАЗАЛА ДА!!! 💖✨";
+      subtitle.textContent = "I knew you’d say yes 😌💘";
+
+      // celebratory gif
+      gif.src = "https://media.giphy.com/media/dyYOjf4hSYLuFPt4lm/giphy.gif";
+
+      // confetti burst
+      const duration = 1200;
+      const end = Date.now() + duration;
+
+      (function frame(){
+        confetti({
+          particleCount: 7,
+          spread: 70,
+          startVelocity: 35,
+          origin: { x: Math.random(), y: Math.random() * 0.25 + 0.05 }
+        });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    });
+
+    // Ensure NO starts inside box
+    setTimeout(() => {
+      noBtn.style.left = "18px";
+      noBtn.style.top = "18px";
+    }, 40);
+  </script>
+</body>
+</html>
